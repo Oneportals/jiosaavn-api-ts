@@ -3,12 +3,12 @@
     "target": "ESNext",
     "module": "CommonJS",
     "skipLibCheck": true,
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
 
     /* Bundler mode */
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "types": ["bun-types", "@cloudflare/workers-types"],
+    
 
     /* Linting */
     "strict": true,
