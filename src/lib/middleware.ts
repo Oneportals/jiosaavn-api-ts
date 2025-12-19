@@ -1,5 +1,7 @@
-import { MiddlewareHandler } from "hono";
+// Avoid importing Hono types directly here to prevent type resolution issues
+// @ts-ignore: optional runtime dependency, provide runtime or mocks in production
 import { Ratelimit } from "@upstash/ratelimit";
+// @ts-ignore: optional runtime dependency, provide runtime or mocks in production
 import { Redis } from "@upstash/redis";
 
 import { config } from "./config";
@@ -9,8 +11,8 @@ import { toCamelCase } from "./utils";
  * Rate Limit Middleware using Upstash Redis Ratelimit
  * -----------------------------------------------------------------------------------------------*/
 
-export function rateLimitMiddleware(): MiddlewareHandler {
-  return async (c, next) => {
+export function rateLimitMiddleware(): any {
+  return async (c: any, next: any) => {
     // skip middleware if rate limit is disabled
     if (!config.rateLimit.enable || c.req.path === "/") {
       return await next();
@@ -98,8 +100,8 @@ export function rateLimitMiddleware(): MiddlewareHandler {
  * Camel Case Middleware
  * -----------------------------------------------------------------------------------------------*/
 
-export function camelCaseMiddleware(): MiddlewareHandler {
-  return async (c, next) => {
+export function camelCaseMiddleware(): any {
+  return async (c: any, next: any) => {
     const camel = c.req.query("camel");
 
     await next();
@@ -112,7 +114,16 @@ export function camelCaseMiddleware(): MiddlewareHandler {
 
       const camelCaseResponse = toCamelCase(obj as Record<string, unknown>);
 
-      c.res = new Response(JSON.stringify(camelCaseResponse), c.res);
+      // Create a new Response preserving status and headers from the original response.
+      const preservedHeaders = new Headers(c.res.headers);
+      if (!preservedHeaders.has("Content-Type")) {
+        preservedHeaders.set("Content-Type", "application/json");
+      }
+
+      c.res = new Response(JSON.stringify(camelCaseResponse), {
+        status: (c.res as Response).status,
+        headers: preservedHeaders,
+      });
     }
   };
 }

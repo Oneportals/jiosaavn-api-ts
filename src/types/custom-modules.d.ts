@@ -27,3 +27,13 @@ declare module 'play-dl' {
   const video_info: any;
   export default video_info;
 }
+
+declare module '@upstash/ratelimit' {
+  const Ratelimit: any;
+  export { Ratelimit };
+}
+
+declare module '@upstash/redis' {
+  const Redis: any;
+  export { Redis };
+}
