@@ -37,6 +37,6 @@
         }
       ]
     }
-  ],
-  "buildCommand": "bun run build:vc"
+  ]
+
 }
